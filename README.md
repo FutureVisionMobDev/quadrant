@@ -10,7 +10,7 @@
    ########   ########      ###      ########  ###    ### #########  ########   ########  
 ```
 
-**Open 4 terminal panes in a 2×2 grid with one command.**
+**Open 4 AI-powered terminal panes in a 2×2 grid with one command.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-cyan.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows-blue.svg)](https://www.microsoft.com/windows)
@@ -23,25 +23,56 @@
 
 ## What is quadrant?
 
-`quadrant` is a tiny PowerShell tool that splits your Windows Terminal into a **2×2 grid** in a single command. No configuration, no setup — just type `c4` and get four panes ready to go.
+`quadrant` splits your Windows Terminal into a **2×2 grid** in one command — and launches your AI coding tool of choice in every pane, each with its own beautiful status banner.
 
 ```
-┌─────────────────┬─────────────────┐
-│                 │                 │
-│     Pane 1      │     Pane 2      │
-│                 │                 │
-├─────────────────┼─────────────────┤
-│                 │                 │
-│     Pane 3      │     Pane 4      │
-│                 │                 │
-└─────────────────┴─────────────────┘
+┌──────────────────────┬──────────────────────┐
+│  ████  codex         │  ████  codex         │
+│  ████  gpt-4o · AI   │  ████  gpt-4o · AI   │
+│                      │                      │
+│  > _                 │  > _                 │
+├──────────────────────┼──────────────────────┤
+│  ████  codex         │  ████  codex         │
+│  ████  gpt-4o · AI   │  ████  gpt-4o · AI   │
+│                      │                      │
+│  > _                 │  > _                 │
+└──────────────────────┴──────────────────────┘
 ```
 
-Perfect for:
-- Running **dev server + tests + git + shell** side by side
-- Monitoring **logs** in multiple services at once
-- Working across **multiple folders** simultaneously
-- Any workflow where one terminal is never enough
+Each pane shows a **tool banner** with relevant info, then launches your AI assistant.
+
+Supports **Cursor Agent**, **OpenAI Codex**, **Claude CLI**, and plain PowerShell.
+
+---
+
+## Supported Tools
+
+| Command | Tool | Banner Color | Launches |
+|---------|------|-------------|----------|
+| `c4` | Plain shell | — | PowerShell |
+| `c4 cursor` | Cursor Agent | Cyan | `cursor-agent` |
+| `c4 codex` | OpenAI Codex | Green | `codex` |
+| `c4 claude` | Claude CLI | Yellow | `claude` |
+
+### What the banner looks like per tool
+
+**Cursor:**
+```
+  ▄▄▄▄  cursor  ■ abdulrahim  PRO  resets 19d
+  ▀▀▀▀  Sonnet 4.6
+```
+
+**Codex:**
+```
+  ██  codex  ■ ASUS  OpenAI
+  ██  gpt-4o  AI coding assistant
+```
+
+**Claude:**
+```
+  ██  claude  ■ ASUS  Anthropic
+  ██  claude-sonnet  AI assistant
+```
 
 ---
 
@@ -53,7 +84,7 @@ Perfect for:
 git clone https://github.com/FutureVisionMobDev/quadrant.git
 ```
 
-### 2. Add `c4` to your PowerShell profile
+### 2. Add shortcuts to your PowerShell profile
 
 Open your profile:
 
@@ -61,10 +92,13 @@ Open your profile:
 notepad $PROFILE
 ```
 
-Add this line (update the path to where you cloned):
+Add these lines (update path to where you cloned):
 
 ```powershell
-function c4 { & "C:\path\to\quadrant\quadrant.ps1" @args }
+function c4      { & "C:\path\to\quadrant\quadrant.ps1" @args }
+function codex4  { & "C:\path\to\quadrant\quadrant.ps1" codex  @args }
+function claude4 { & "C:\path\to\quadrant\quadrant.ps1" claude @args }
+function ca4     { & "C:\path\to\quadrant\quadrant.ps1" cursor @args }
 ```
 
 ### 3. Reload your profile
@@ -73,84 +107,91 @@ function c4 { & "C:\path\to\quadrant\quadrant.ps1" @args }
 . $PROFILE
 ```
 
-That's it. Now type `c4` anywhere.
-
 ---
 
 ## Usage
 
 ```powershell
-# Open 4 panes in the current folder
+# 4 plain shells in current folder
 c4
 
-# Open 4 panes in a specific folder
-c4 C:\myproject
+# 4 panes running Codex CLI
+c4 codex
 
-# Open 4 panes with a custom startup command in each
-c4 . "npm run dev" "npm test" "git log --oneline" ""
+# 4 panes running Cursor Agent
+c4 cursor
+
+# 4 panes running Claude CLI
+c4 claude
+
+# Open in a specific folder
+c4 codex C:\myproject
+
+# Shortcut aliases
+codex4           # same as: c4 codex
+claude4          # same as: c4 claude
+ca4              # same as: c4 cursor
 ```
 
 ### Parameters
 
-| Parameter | Position | Description |
-|-----------|----------|-------------|
-| `Dir`     | 1st | Working directory for all panes. Defaults to current folder. |
-| `Cmd1`    | 2nd | Startup command for pane 1 (optional) |
-| `Cmd2`    | 3rd | Startup command for pane 2 (optional) |
-| `Cmd3`    | 4th | Startup command for pane 3 (optional) |
-| `Cmd4`    | 5th | Startup command for pane 4 (optional) |
-| `-Help`   | flag | Show usage information |
-
-### Examples
-
-```powershell
-# Full-stack dev setup in one command
-c4 C:\myapp "npm run dev" "npm test -- --watch" "docker compose up" ""
-
-# Monitor logs across services
-c4 C:\project "tail -f logs/api.log" "tail -f logs/worker.log" "" ""
-
-# Quick 4-pane shell in current folder
-c4
-```
+| Parameter | Description |
+|-----------|-------------|
+| `cursor` / `codex` / `claude` | Tool to launch in each pane |
+| `<dir>` | Working directory (default: current folder) |
+| `-Help` | Show usage |
 
 ---
 
 ## Requirements
 
-| Requirement | Version |
-|-------------|---------|
-| [Windows Terminal](https://aka.ms/terminal) | Any recent version |
-| PowerShell | 5.1 or later |
-| Windows | 10 / 11 |
+| Requirement | Notes |
+|-------------|-------|
+| [Windows Terminal](https://aka.ms/terminal) | Must be installed |
+| PowerShell 5.1+ | Built-in on Windows 10/11 |
+| Tool CLIs | Install separately as needed |
+
+**Install the AI CLIs:**
+
+```powershell
+# OpenAI Codex
+npm install -g @openai/codex
+
+# Anthropic Claude
+npm install -g @anthropic-ai/claude-code
+
+# Cursor Agent
+# Install from https://cursor.sh
+```
 
 ---
 
 ## How it works
 
-`quadrant` calls `wt.exe` with a sequence of pane-split commands to build the 2×2 layout:
+`quadrant` calls `wt.exe` with a pane-split sequence to build the 2×2 layout, passing each pane to `pane.ps1` which handles the banner + tool launch:
 
 ```
-new-tab          → pane 1 (full width)
-split --vertical → pane 2 (right half)
+new-tab            → pane 1 (full width)
+split --vertical   → pane 2 (right side)
 move-focus left
 split --horizontal → pane 3 (bottom-left)
 move-focus right
 split --horizontal → pane 4 (bottom-right)
 ```
 
-Each pane opens PowerShell, navigates to the target directory, and optionally runs your startup command.
+Each pane runs `pane.ps1 -Tool <tool> -Dir <dir>` which:
+1. Shows the tool banner with user/plan info
+2. Launches the AI CLI tool
 
 ---
 
-## Contributing
+## Roadmap
 
-PRs are welcome. Ideas for future versions:
-
-- [ ] `--layout 3` for a 3-column layout
+- [ ] `--layout 3` for 3-column layout
 - [ ] `--profile` to save and restore named pane setups
-- [ ] Cross-platform support (macOS iTerm2, Linux tmux)
+- [ ] Gemini CLI support
 - [ ] Config file (`.quadrant.json`) per project
+- [ ] Cross-platform (macOS iTerm2, Linux tmux)
 
 ---
 
