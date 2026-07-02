@@ -11,13 +11,13 @@ $files   = @("quadrant.ps1", "pane.ps1")
 
 # ── Banner ────────────────────────────────────────────────────────────────────
 Write-Host ""
-Write-Host "  ::::::::  :::    :::  :::     :::::::  :::::::::   :::::::: " -ForegroundColor Cyan
-Write-Host "  :+:    :+ :+:    :+: :+:+:   :+:   :+ :+:    :+: :+:    :+:" -ForegroundColor Cyan
-Write-Host "  +:+    +:+ +:+  +:+ +:+ +:+  +:+   +:+ +:+    +:+ +:+       " -ForegroundColor Cyan
-Write-Host "  +#+    +:+ +#++:+   +#+  +:+ +#+   +:+ +#++:++#:  +#++:++#++" -ForegroundColor Cyan
-Write-Host "  +#+    +#+ +#+      +#+#+#+#+ +#+   +#+ +#+    +#+        +#+ " -ForegroundColor Cyan
-Write-Host "  #+#    #+# #+#      #+#   #+# #+#   #+# #+#    #+# #+#    #+#" -ForegroundColor Cyan
-Write-Host "   ########  ###      ###   ###  #######  ###    ###  ######## " -ForegroundColor Cyan
+Write-Host "  #######  ##     ##    ###    ########  ########     ###    ##    ## ########" -ForegroundColor Cyan
+Write-Host " ##     ## ##     ##   ## ##   ##     ## ##     ##   ## ##   ###   ##    ##  " -ForegroundColor Cyan
+Write-Host " ##     ## ##     ##  ##   ##  ##     ## ##     ##  ##   ##  ####  ##    ##  " -ForegroundColor Cyan
+Write-Host " ##     ## ##     ## ##     ## ##     ## ########  ##     ## ## ## ##    ##  " -ForegroundColor Cyan
+Write-Host " ##  ## ## ##     ## ######### ##     ## ##   ##   ######### ##  ####    ##  " -ForegroundColor Cyan
+Write-Host " ##    ##  ##     ## ##     ## ##     ## ##    ##  ##     ## ##   ###    ##  " -ForegroundColor Cyan
+Write-Host "  ##### ##  #######  ##     ## ########  ##     ## ##     ## ##    ##    ##  " -ForegroundColor Cyan
 Write-Host ""
 Write-Host "  Open 4 AI terminal panes in a 2x2 grid — one command." -ForegroundColor White
 Write-Host "  github.com/FutureVisionMobDev/quadrant" -ForegroundColor DarkGray
