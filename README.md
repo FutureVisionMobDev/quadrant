@@ -21,6 +21,24 @@
 
 ---
 
+## Quick Install
+
+Open PowerShell and run:
+
+```powershell
+irm https://raw.githubusercontent.com/FutureVisionMobDev/quadrant/main/install.ps1 | iex
+```
+
+Then reload your profile:
+
+```powershell
+. $PROFILE
+```
+
+That's it. Type `c4` to open 4 panes.
+
+---
+
 ## What is quadrant?
 
 `quadrant` splits your Windows Terminal into a **2×2 grid** in one command — and launches your AI coding tool of choice in every pane, each with its own beautiful status banner.
