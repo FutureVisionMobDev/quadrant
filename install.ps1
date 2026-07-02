@@ -52,23 +52,38 @@ if (-not (Test-Path $PROFILE)) {
     New-Item -ItemType File -Path $PROFILE -Force | Out-Null
 }
 
-$block = @"
+$block = @(
+    '# -- quadrant (installed by irm installer) --'
+    ('function c4      {{ & "{0}\quadrant.ps1" @args }}' -f $destDir)
+    ('function codex4  {{ & "{0}\quadrant.ps1" codex  @args }}' -f $destDir)
+    ('function claude4 {{ & "{0}\quadrant.ps1" claude @args }}' -f $destDir)
+    ('function ca4     {{ & "{0}\quadrant.ps1" cursor @args }}' -f $destDir)
+    "# ---------------------------------------------------------------------------"
+) -join "`r`n"
 
-# ── quadrant (installed by irm installer) ─────────────────────────────────────
-function c4      { & "$destDir\quadrant.ps1" @args }
-function codex4  { & "$destDir\quadrant.ps1" codex  @args }
-function claude4 { & "$destDir\quadrant.ps1" claude @args }
-function ca4     { & "$destDir\quadrant.ps1" cursor @args }
-# ─────────────────────────────────────────────────────────────────────────────
-"@
-
+$marker = 'quadrant (installed by irm installer)'
 $existing = Get-Content $PROFILE -Raw -ErrorAction SilentlyContinue
-if ($existing -notmatch "quadrant \(installed by irm installer\)") {
-    Add-Content $PROFILE $block
+if (-not $existing) { $existing = "" }
+
+$blockPattern = '(?s)# (?:--|──) quadrant \(installed by irm installer\)(?: --| ──).*?# (?:-{5,}|──{5,})'
+if ($existing -match $blockPattern) {
+    $updated = [regex]::Replace($existing, $blockPattern, $block)
+    Set-Content -Path $PROFILE -Value $updated -Encoding UTF8
+    Write-Host "        ~ profile block updated" -ForegroundColor Green
+} elseif ($existing -notmatch [regex]::Escape($marker)) {
+    $prefix = if ($existing -match '\S') { "`r`n" } else { "" }
+    Add-Content -Path $PROFILE -Value ($prefix + $block)
     Write-Host "        + c4, codex4, claude4, ca4 added to profile" -ForegroundColor Green
 } else {
-    Write-Host "        ~ profile already patched, skipping" -ForegroundColor DarkGray
+    Write-Host "        ~ profile already has quadrant commands" -ForegroundColor DarkGray
 }
+
+# Load commands in the current session (no profile reload required)
+function global:c4      { & "$destDir\quadrant.ps1" @args }
+function global:codex4  { & "$destDir\quadrant.ps1" codex  @args }
+function global:claude4 { & "$destDir\quadrant.ps1" claude @args }
+function global:ca4     { & "$destDir\quadrant.ps1" cursor @args }
+Write-Host "        + commands ready in this session" -ForegroundColor Green
 
 # ── Check Windows Terminal ─────────────────────────────────────────────────────
 Write-Host "  [3/3] Checking requirements ..." -ForegroundColor DarkGray
@@ -83,8 +98,7 @@ if (Get-Command "wt.exe" -ErrorAction SilentlyContinue) {
 Write-Host ""
 Write-Host "  Installation complete!" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "  Reload your profile then use:" -ForegroundColor DarkGray
-Write-Host "    . `$PROFILE" -ForegroundColor White
+Write-Host "  Try now (new shells: . `$PROFILE once):" -ForegroundColor DarkGray
 Write-Host ""
 Write-Host "  Commands:" -ForegroundColor DarkGray
 Write-Host "    c4              open 4 plain shells" -ForegroundColor White
